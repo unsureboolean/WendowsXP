@@ -43,6 +43,11 @@ html, body {
   overflow: hidden;
 }
 
+.app-container {
+  height: 100%;
+  width: 100%;
+}
+
 /* Desktop Background */
 .desktop-bg {
   background-image: url('https://i.imgur.com/K9jJI4E.png');
