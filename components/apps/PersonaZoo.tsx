@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
 import { personas } from '../../data/personas';
@@ -11,7 +12,7 @@ interface Message {
 }
 
 export const PersonaZoo: React.FC = () => {
-  const [ai] = useState(() => new GoogleGenAI({apiKey: process.env.AIzaSyA96kXYn7w4ZtSsVCMOUVr0AgTdfix1-cU}));
+  const [ai] = useState(() => new GoogleGenAI({apiKey: process.env.API_KEY!}));
   const [personaOrder, setPersonaOrder] = useState<string[]>(() => Object.keys(personas));
   const [activePersonaKey, setActivePersonaKey] = useState<string>('zookeeper');
   const [conversations, setConversations] = useState<Record<string, Message[]>>({});
