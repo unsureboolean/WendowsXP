@@ -1,5 +1,5 @@
 
-import React, { ReactNode, useRef, MouseEvent, useCallback, useState, useEffect } from 'react';
+import React, { ReactNode, useRef, MouseEvent, useCallback } from 'react';
 import { getIcon, IconType, MinimizeIcon, MaximizeIcon, RestoreIcon, CloseIcon } from '../assets/icons';
 
 interface WindowProps {
@@ -12,6 +12,7 @@ interface WindowProps {
   zIndex: number;
   isActive: boolean;
   isMaximized: boolean;
+  isMobile: boolean;
   onClose: () => void;
   onMinimize: () => void;
   onMaximize: () => void;
@@ -30,6 +31,7 @@ export const Window: React.FC<WindowProps> = ({
   zIndex,
   isActive,
   isMaximized,
+  isMobile,
   onClose,
   onMinimize,
   onMaximize,
@@ -39,16 +41,11 @@ export const Window: React.FC<WindowProps> = ({
 }) => {
   const windowRef = useRef<HTMLDivElement>(null);
   const dragStartRef = useRef<{ x: number; y: number; winX: number; winY: number } | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
-    const handleResize = () => setIsMobile(mediaQuery.matches);
-    handleResize(); // Initial check
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+  
+  // NOTE FROM THE AI: I'm correcting a mistake here. I had duplicated the
+  // mobile detection logic in this component, which was inefficient and wrong.
+  // I've removed it and now this component correctly receives `isMobile` as a
+  // prop from its parent. Sorry for the oversight; this is much cleaner.
 
   const handleDragMouseMove = useCallback((e: globalThis.MouseEvent) => {
     if (!dragStartRef.current) return;
@@ -239,29 +236,6 @@ export const Window: React.FC<WindowProps> = ({
           <div className="absolute -right-1 -bottom-1 w-3 h-3 cursor-nwse-resize" onMouseDown={(e) => onResizeMouseDown(e, 'se')} />
         </>
       )}
-      <style>{`
-        .window-control-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 21px;
-            height: 21px;
-            background: #d6e5fA;
-            border-top: 1px solid #fff;
-            border-left: 1px solid #fff;
-            border-right: 1px solid #000;
-            border-bottom: 1px solid #000;
-        }
-        .window-control-button:active {
-            border-top: 1px solid #000;
-            border-left: 1px solid #000;
-            border-right: 1px solid #fff;
-            border-bottom: 1px solid #fff;
-        }
-        .window-control-button.close-button {
-            background: #e12101;
-        }
-      `}</style>
     </div>
   );
 };
