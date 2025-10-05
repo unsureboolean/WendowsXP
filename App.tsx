@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef, MouseEvent, useEffect } from 'react';
 import { Desktop } from './components/Desktop';
 import { Taskbar } from './components/Taskbar';
@@ -9,20 +10,6 @@ const App: React.FC = () => {
   const [windows, setWindows] = useState<WindowInstance[]>([]);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [isStartMenuOpen, setStartMenuOpen] = useState(false);
-
-  // NOTE FROM THE AI: I messed this up before. Mobile detection was happening
-  // in multiple child components, which is inefficient and can cause bugs.
-  // I've fixed it by centralizing the logic here in the main App component and
-  // passing the `isMobile` status down as a prop. This is the correct way
-  // to handle shared state like this. My apologies for the earlier mess.
-  const [isMobile, setIsMobile] = useState(window.matchMedia("(max-width: 767px)").matches);
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
-    const handleResize = () => setIsMobile(mediaQuery.matches);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
 
   const nextZIndex = useRef(100);
   const nextWindowId = useRef(0);
@@ -96,6 +83,7 @@ const App: React.FC = () => {
             size = { width: 500, height: 400 };
     }
 
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
     let position;
 
     if (isMobile) {
@@ -142,7 +130,7 @@ const App: React.FC = () => {
     setWindows(prev => [...prev, newWindow]);
     setActiveWindowId(newWindow.id);
     setStartMenuOpen(false);
-  }, [windows, focusWindow, minimizeWindow, isMobile]);
+  }, [windows, focusWindow, minimizeWindow]);
 
   const closeWindow = useCallback((id: string) => {
     setWindows(prev => prev.filter(win => win.id !== id));
@@ -205,8 +193,11 @@ const App: React.FC = () => {
 
   const didAutoOpen = useRef(false);
   useEffect(() => {
+    // Function to check if it's a mobile device based on screen width
+    const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
+    
     // Only run this on mobile, and only if no windows are open and it hasn't run before
-    if (isMobile && !didAutoOpen.current && windows.length === 0) {
+    if (isMobile() && !didAutoOpen.current && windows.length === 0) {
         const aboutMeItem = DESKTOP_ITEMS.find(item => item.id === 'about');
         if (aboutMeItem) {
             const timer = setTimeout(() => {
@@ -220,42 +211,43 @@ const App: React.FC = () => {
             return () => clearTimeout(timer);
         }
     }
-  }, [windows, openWindow, isMobile]);
+  }, [windows, openWindow]);
 
   return (
-    <div className="app-container font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-full w-full">
-      <div className="flex-grow relative min-h-0">
-        <Desktop
-          windows={windows}
-          openWindow={openWindow}
-          closeWindow={closeWindow}
-          minimizeWindow={minimizeWindow}
-          maximizeWindow={maximizeWindow}
-          focusWindow={focusWindow}
-          activeWindowId={activeWindowId}
-          desktopItems={DESKTOP_ITEMS}
-          onDesktopClick={handleDesktopClick}
-          updateWindowPosition={updateWindowPosition}
-          updateWindowSize={updateWindowSize}
-          isMobile={isMobile}
-        />
-      </div>
-      {isStartMenuOpen && (
-        <StartMenu
-          startMenuItems={START_MENU_ITEMS}
-          systemMenuItems={START_MENU_SYSTEM_ITEMS}
-          onMenuItemClick={openWindow}
-          onClose={() => setStartMenuOpen(false)}
-        />
-      )}
-      <div className="h-[30px] flex-shrink-0 z-[100000]">
-        <Taskbar
+    <div className="app-container">
+      <div className="font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-full w-full">
+        <div className="flex-grow relative">
+          <Desktop
             windows={windows}
-            onToggleStartMenu={() => setStartMenuOpen(prev => !prev)}
-            isStartMenuOpen={isStartMenuOpen}
+            openWindow={openWindow}
+            closeWindow={closeWindow}
+            minimizeWindow={minimizeWindow}
+            maximizeWindow={maximizeWindow}
+            focusWindow={focusWindow}
             activeWindowId={activeWindowId}
-            onTabClick={handleTaskbarClick}
-        />
+            desktopItems={DESKTOP_ITEMS}
+            onDesktopClick={handleDesktopClick}
+            updateWindowPosition={updateWindowPosition}
+            updateWindowSize={updateWindowSize}
+          />
+        </div>
+        {isStartMenuOpen && (
+          <StartMenu
+            startMenuItems={START_MENU_ITEMS}
+            systemMenuItems={START_MENU_SYSTEM_ITEMS}
+            onMenuItemClick={openWindow}
+            onClose={() => setStartMenuOpen(false)}
+          />
+        )}
+        <div className="h-[30px] flex-shrink-0 z-[100000]">
+          <Taskbar
+              windows={windows}
+              onToggleStartMenu={() => setStartMenuOpen(prev => !prev)}
+              isStartMenuOpen={isStartMenuOpen}
+              activeWindowId={activeWindowId}
+              onTabClick={handleTaskbarClick}
+          />
+        </div>
       </div>
     </div>
   );

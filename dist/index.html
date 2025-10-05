@@ -7,6 +7,51 @@
     <title>Windows XP Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
+  <style>
+    html, body, #root {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      overflow: hidden;
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 767px) {
+        /* Mobile Background for Landscape */
+        body {
+            background-image: url('https://i.imgur.com/jdAhRYN.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Full-screen layout for Portrait */
+        @media (orientation: portrait) {
+            body {
+                background-image: none; /* Disable wallpaper on body, it's handled by .app-container */
+                background-color: #000;
+            }
+            .app-container {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                
+                /* Apply the mobile wallpaper to the container itself */
+                background-image: url('https://i.imgur.com/jdAhRYN.png');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+
+                overflow: hidden; /* Ensure content is clipped */
+            }
+        }
+    }
+  </style>
+<link rel="stylesheet" href="/index.css">
   <script type="importmap">
 {
   "imports": {
@@ -17,8 +62,7 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/assets/index-Cx_ppCnu.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-B7RDSsMD.css">
+  <script type="module" crossorigin src="/assets/index-DJd4tOc2.js"></script>
 </head>
   <body>
     <div id="root"></div>

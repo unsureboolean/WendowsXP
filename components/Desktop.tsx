@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useState, useEffect } from 'react';
 import type { WindowInstance, DesktopItem } from '../types';
 import { Window } from './Window';
 import { Icon } from './Icon';
@@ -15,7 +15,6 @@ interface DesktopProps {
   updateWindowSize: (id: string, size: { width: number; height: number }) => void;
   activeWindowId: string | null;
   onDesktopClick: (e: MouseEvent<HTMLDivElement>) => void;
-  isMobile: boolean;
 }
 
 export const Desktop: React.FC<DesktopProps> = ({
@@ -30,13 +29,24 @@ export const Desktop: React.FC<DesktopProps> = ({
   updateWindowSize,
   activeWindowId,
   onDesktopClick,
-  isMobile,
 }) => {
-  // NOTE FROM THE AI: My apologies. I had previously put mobile detection logic
-  // directly in this component. That was a mistake, as it was also being done
-  // in the Window component, leading to redundant code. I have removed it,
-  // and this component now correctly receives the `isMobile` status as a prop
-  // from the main App component.
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Function to check screen size
+    const checkScreenSize = () => {
+      setIsMobile(window.matchMedia('(max-width: 767px)').matches);
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add event listener for resize
+    window.addEventListener('resize', checkScreenSize);
+
+    // Cleanup listener on component unmount
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   return (
     <div
@@ -44,13 +54,21 @@ export const Desktop: React.FC<DesktopProps> = ({
       onClick={onDesktopClick}
     >
       {/* 
-        This div handles the desktop background. It is only rendered on screens wider than 767px (non-mobile).
-        Mobile backgrounds are handled by the CSS in index.css.
+        This div handles the desktop background. It is only rendered on screens wider than 767px.
+        Mobile backgrounds are handled by the CSS in index.html to support the portrait aspect-ratio lock.
+        Using an inline style here can help bypass potential issues with CSS loading or browser extensions
+        that might interfere with external stylesheets or head-injected styles.
       */}
       {!isMobile && (
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 desktop-bg"
+          className="absolute inset-0 -z-10"
+          style={{
+            backgroundImage: "url('https://i.imgur.com/K9jJI4E.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
         />
       )}
       
@@ -78,7 +96,6 @@ export const Desktop: React.FC<DesktopProps> = ({
             zIndex={win.zIndex}
             isActive={win.id === activeWindowId}
             isMaximized={win.isMaximized}
-            isMobile={isMobile}
             onClose={() => closeWindow(win.id)}
             onMinimize={() => minimizeWindow(win.id)}
             onMaximize={() => maximizeWindow(win.id)}
