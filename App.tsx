@@ -224,7 +224,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app-container font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-full w-full">
-      <div className="flex-grow relative">
+      <div className="flex-grow relative min-h-0">
         <Desktop
           windows={windows}
           openWindow={openWindow}
