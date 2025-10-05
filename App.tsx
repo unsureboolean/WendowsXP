@@ -5,7 +5,6 @@ import { Taskbar } from './components/Taskbar';
 import { StartMenu } from './components/StartMenu';
 import { DESKTOP_ITEMS, START_MENU_ITEMS, START_MENU_SYSTEM_ITEMS } from './data/content';
 import type { WindowInstance, DesktopItem } from './types';
-import { OrientationLock } from './components/OrientationLock';
 
 const App: React.FC = () => {
   const [windows, setWindows] = useState<WindowInstance[]>([]);
@@ -226,7 +225,6 @@ const App: React.FC = () => {
 
   return (
     <div className="app-container">
-      <OrientationLock />
       <div className="font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-full w-full">
         <div className="flex-grow relative">
           <Desktop
