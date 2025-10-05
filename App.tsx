@@ -223,41 +223,39 @@ const App: React.FC = () => {
   }, [windows, openWindow, isMobile]);
 
   return (
-    <div className="app-container h-full w-full">
-      <div className="font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-full w-full">
-        <div className="flex-grow relative">
-          <Desktop
+    <div className="app-container font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-full w-full">
+      <div className="flex-grow relative">
+        <Desktop
+          windows={windows}
+          openWindow={openWindow}
+          closeWindow={closeWindow}
+          minimizeWindow={minimizeWindow}
+          maximizeWindow={maximizeWindow}
+          focusWindow={focusWindow}
+          activeWindowId={activeWindowId}
+          desktopItems={DESKTOP_ITEMS}
+          onDesktopClick={handleDesktopClick}
+          updateWindowPosition={updateWindowPosition}
+          updateWindowSize={updateWindowSize}
+          isMobile={isMobile}
+        />
+      </div>
+      {isStartMenuOpen && (
+        <StartMenu
+          startMenuItems={START_MENU_ITEMS}
+          systemMenuItems={START_MENU_SYSTEM_ITEMS}
+          onMenuItemClick={openWindow}
+          onClose={() => setStartMenuOpen(false)}
+        />
+      )}
+      <div className="h-[30px] flex-shrink-0 z-[100000]">
+        <Taskbar
             windows={windows}
-            openWindow={openWindow}
-            closeWindow={closeWindow}
-            minimizeWindow={minimizeWindow}
-            maximizeWindow={maximizeWindow}
-            focusWindow={focusWindow}
+            onToggleStartMenu={() => setStartMenuOpen(prev => !prev)}
+            isStartMenuOpen={isStartMenuOpen}
             activeWindowId={activeWindowId}
-            desktopItems={DESKTOP_ITEMS}
-            onDesktopClick={handleDesktopClick}
-            updateWindowPosition={updateWindowPosition}
-            updateWindowSize={updateWindowSize}
-            isMobile={isMobile}
-          />
-        </div>
-        {isStartMenuOpen && (
-          <StartMenu
-            startMenuItems={START_MENU_ITEMS}
-            systemMenuItems={START_MENU_SYSTEM_ITEMS}
-            onMenuItemClick={openWindow}
-            onClose={() => setStartMenuOpen(false)}
-          />
-        )}
-        <div className="h-[30px] flex-shrink-0 z-[100000]">
-          <Taskbar
-              windows={windows}
-              onToggleStartMenu={() => setStartMenuOpen(prev => !prev)}
-              isStartMenuOpen={isStartMenuOpen}
-              activeWindowId={activeWindowId}
-              onTabClick={handleTaskbarClick}
-          />
-        </div>
+            onTabClick={handleTaskbarClick}
+        />
       </div>
     </div>
   );
