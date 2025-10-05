@@ -225,7 +225,7 @@ const App: React.FC = () => {
   }, [windows, openWindow, isMobile]);
 
   return (
-    <div className="app-container">
+    <div className="app-container h-full w-full">
       <OrientationLock />
       <div className="font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-full w-full">
         <div className="flex-grow relative">
