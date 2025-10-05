@@ -1,11 +1,9 @@
-
 import React, { useState, useCallback, useRef, MouseEvent, useEffect } from 'react';
 import { Desktop } from './components/Desktop';
 import { Taskbar } from './components/Taskbar';
 import { StartMenu } from './components/StartMenu';
 import { DESKTOP_ITEMS, START_MENU_ITEMS, START_MENU_SYSTEM_ITEMS } from './data/content';
 import type { WindowInstance, DesktopItem } from './types';
-import { OrientationLock } from './components/OrientationLock';
 
 const App: React.FC = () => {
   const [windows, setWindows] = useState<WindowInstance[]>([]);
@@ -225,46 +223,42 @@ const App: React.FC = () => {
   }, [windows, openWindow, isMobile]);
 
   return (
-    <div className="app-container">
-      <OrientationLock />
-      <div className="font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-screen w-full">
-        <div className="flex-grow relative">
-          <Desktop
+    <div className="app-container font-['Tahoma',_sans-serif] text-[11px] overflow-hidden flex flex-col h-full w-full">
+      <div className="flex-grow relative min-h-0">
+        <Desktop
+          windows={windows}
+          openWindow={openWindow}
+          closeWindow={closeWindow}
+          minimizeWindow={minimizeWindow}
+          maximizeWindow={maximizeWindow}
+          focusWindow={focusWindow}
+          activeWindowId={activeWindowId}
+          desktopItems={DESKTOP_ITEMS}
+          onDesktopClick={handleDesktopClick}
+          updateWindowPosition={updateWindowPosition}
+          updateWindowSize={updateWindowSize}
+          isMobile={isMobile}
+        />
+      </div>
+      {isStartMenuOpen && (
+        <StartMenu
+          startMenuItems={START_MENU_ITEMS}
+          systemMenuItems={START_MENU_SYSTEM_ITEMS}
+          onMenuItemClick={openWindow}
+          onClose={() => setStartMenuOpen(false)}
+        />
+      )}
+      <div className="h-[30px] flex-shrink-0 z-[100000]">
+        <Taskbar
             windows={windows}
-            openWindow={openWindow}
-            closeWindow={closeWindow}
-            minimizeWindow={minimizeWindow}
-            maximizeWindow={maximizeWindow}
-            focusWindow={focusWindow}
+            onToggleStartMenu={() => setStartMenuOpen(prev => !prev)}
+            isStartMenuOpen={isStartMenuOpen}
             activeWindowId={activeWindowId}
-            desktopItems={DESKTOP_ITEMS}
-            onDesktopClick={handleDesktopClick}
-            updateWindowPosition={updateWindowPosition}
-            updateWindowSize={updateWindowSize}
-            isMobile={isMobile}
-          />
-        </div>
-        {isStartMenuOpen && (
-          <StartMenu
-            startMenuItems={START_MENU_ITEMS}
-            systemMenuItems={START_MENU_SYSTEM_ITEMS}
-            onMenuItemClick={openWindow}
-            onClose={() => setStartMenuOpen(false)}
-          />
-        )}
-        <div className="h-[30px] flex-shrink-0 z-[100000]">
-          <Taskbar
-              windows={windows}
-              onToggleStartMenu={() => setStartMenuOpen(prev => !prev)}
-              isStartMenuOpen={isStartMenuOpen}
-              activeWindowId={activeWindowId}
-              onTabClick={handleTaskbarClick}
-          />
-        </div>
+            onTabClick={handleTaskbarClick}
+        />
       </div>
     </div>
   );
 };
 
 export default App;
-
