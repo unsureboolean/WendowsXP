@@ -1,0 +1,84 @@
+/* Styles from Taskbar.tsx */
+.border-outset {
+  border-style: solid;
+  border-color: #9ebffc #1c4ab0 #1c4ab0 #9ebffc;
+}
+.border-inset-deep {
+  border-style: solid;
+  border-color: #0c2b6b #83a7f1 #83a7f1 #0c2b6b;
+}
+
+/* Styles from Window.tsx */
+.window-control-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 21px;
+    height: 21px;
+    background: #d6e5fA;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
+.window-control-button:active {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+.window-control-button.close-button {
+    background: #e12101;
+}
+
+/* Original styles */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow: hidden;
+}
+
+/* Desktop Background */
+.desktop-bg {
+  background-image: url('https://i.imgur.com/K9jJI4E.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Mobile Styles */
+@media (max-width: 767px) {
+    /* Mobile Background for Landscape */
+    body {
+        background-image: url('https://i.imgur.com/jdAhRYN.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* Full-screen layout for Portrait */
+    @media (orientation: portrait) {
+        body {
+            background-image: none; /* Disable wallpaper on body, it's handled by .app-container */
+            background-color: #000;
+        }
+        .app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            
+            /* Apply the mobile wallpaper to the container itself */
+            background-image: url('https://i.imgur.com/jdAhRYN.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            overflow: hidden; /* Ensure content is clipped */
+        }
+    }
+}
